@@ -1,0 +1,133 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * فزعة – Faza'a design system.
+ * Pink + purple brand, white surfaces, Arabic-first RTL.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --font-sans: "Cairo", system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 1rem;
+  --background: oklch(0.99 0.008 330);
+  --foreground: oklch(0.22 0.05 310);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.05 310);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.05 310);
+  --primary: oklch(0.62 0.23 350);
+  --primary-foreground: oklch(0.99 0.01 330);
+  --secondary: oklch(0.96 0.03 320);
+  --secondary-foreground: oklch(0.34 0.12 320);
+  --muted: oklch(0.96 0.02 320);
+  --muted-foreground: oklch(0.52 0.05 315);
+  --accent: oklch(0.52 0.22 300);
+  --accent-foreground: oklch(0.99 0.01 330);
+  --destructive: oklch(0.58 0.23 25);
+  --destructive-foreground: oklch(0.99 0.01 330);
+  --success: oklch(0.6 0.15 155);
+  --success-foreground: oklch(0.99 0.01 155);
+  --border: oklch(0.92 0.02 325);
+  --input: oklch(0.92 0.02 325);
+  --ring: oklch(0.62 0.23 350);
+
+  --gradient-brand: linear-gradient(
+    135deg,
+    oklch(0.62 0.23 350),
+    oklch(0.52 0.22 300)
+  );
+  --shadow-soft: 0 8px 24px -12px oklch(0.52 0.22 320 / 0.35);
+  --shadow-card: 0 2px 12px -6px oklch(0.52 0.22 320 / 0.22);
+  --brand-wave: linear-gradient(135deg, oklch(0.9 0.12 340 / 0.7), oklch(0.84 0.13 300 / 0.7));
+  --speed-lines: repeating-linear-gradient(120deg, transparent 0 14px, oklch(1 0 0 / 0.8) 14px 17px);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+}
+
+@utility bg-brand-gradient {
+  background-image: var(--gradient-brand);
+}
+
+@utility shadow-brand {
+  box-shadow: var(--shadow-soft);
+}
+
+@utility shadow-card-soft {
+  box-shadow: var(--shadow-card);
+}
+
+@utility text-brand-gradient {
+  background-image: var(--gradient-brand);
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-brand-wave {
+  background-image: var(--brand-wave);
+  clip-path: polygon(0 52%, 18% 34%, 38% 58%, 62% 28%, 82% 48%, 100% 20%, 100% 100%, 0 100%);
+}
+
+@utility bg-speed-lines {
+  background-image: var(--speed-lines);
+}
+
+.brand-screen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.brand-screen::after {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: -1;
+  height: 22vh;
+  content: "";
+  background-image: var(--brand-wave);
+  clip-path: polygon(0 58%, 20% 36%, 42% 62%, 66% 30%, 84% 48%, 100% 25%, 100% 100%, 0 100%);
+  opacity: 0.45;
+}
