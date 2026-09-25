@@ -13,8 +13,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ChatsRouteImport } from './routes/chats'
 import { Route as CreateRouteImport } from './routes/create'
+import { Route as FamilyRouteImport } from './routes/family'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ChatChatIdRouteImport } from './routes/chat.$chatId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -37,6 +39,11 @@ const CreateRoute = CreateRouteImport.update({
   path: '/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FamilyRoute = FamilyRouteImport.update({
+  id: '/family',
+  path: '/family',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersRoute = OrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
@@ -45,6 +52,11 @@ const OrdersRoute = OrdersRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatChatIdRoute = ChatChatIdRouteImport.update({
@@ -58,8 +70,10 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/chats': typeof ChatsRoute
   '/create': typeof CreateRoute
+  '/family': typeof FamilyRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
+  '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
 }
 export interface FileRoutesByTo {
@@ -67,8 +81,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/chats': typeof ChatsRoute
   '/create': typeof CreateRoute
+  '/family': typeof FamilyRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
+  '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
 }
 export interface FileRoutesById {
@@ -77,8 +93,10 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/chats': typeof ChatsRoute
   '/create': typeof CreateRoute
+  '/family': typeof FamilyRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
+  '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
 }
 export interface FileRouteTypes {
@@ -88,8 +106,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/chats'
     | '/create'
+    | '/family'
     | '/orders'
     | '/profile'
+    | '/welcome'
     | '/chat/$chatId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -97,8 +117,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/chats'
     | '/create'
+    | '/family'
     | '/orders'
     | '/profile'
+    | '/welcome'
     | '/chat/$chatId'
   id:
     | '__root__'
@@ -106,8 +128,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/chats'
     | '/create'
+    | '/family'
     | '/orders'
     | '/profile'
+    | '/welcome'
     | '/chat/$chatId'
   fileRoutesById: FileRoutesById
 }
@@ -116,8 +140,10 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ChatsRoute: typeof ChatsRoute
   CreateRoute: typeof CreateRoute
+  FamilyRoute: typeof FamilyRoute
   OrdersRoute: typeof OrdersRoute
   ProfileRoute: typeof ProfileRoute
+  WelcomeRoute: typeof WelcomeRoute
   ChatChatIdRoute: typeof ChatChatIdRoute
 }
 
@@ -151,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/family': {
+      id: '/family'
+      path: '/family'
+      fullPath: '/family'
+      preLoaderRoute: typeof FamilyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/orders': {
       id: '/orders'
       path: '/orders'
@@ -163,6 +196,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat/$chatId': {
@@ -180,8 +220,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ChatsRoute: ChatsRoute,
   CreateRoute: CreateRoute,
+  FamilyRoute: FamilyRoute,
   OrdersRoute: OrdersRoute,
   ProfileRoute: ProfileRoute,
+  WelcomeRoute: WelcomeRoute,
   ChatChatIdRoute: ChatChatIdRoute,
 }
 export const routeTree = rootRouteImport

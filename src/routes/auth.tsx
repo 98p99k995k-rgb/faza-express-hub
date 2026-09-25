@@ -67,7 +67,9 @@ function AuthPage() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-bold text-foreground">المدينة (اختياري)</label>
+            <label className="mb-1.5 block text-sm font-bold text-foreground">
+              المدينة (اختياري)
+            </label>
             <input
               value={city}
               onChange={(e) => setCity(e.target.value)}

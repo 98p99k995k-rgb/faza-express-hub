@@ -20,6 +20,11 @@ export type HelpRequest = {
   status: "مفتوح" | "قيد التنفيذ" | "مكتمل";
   owner: string;
   mine: boolean;
+  forSomeoneElse?: boolean;
+  beneficiaryName?: string;
+  beneficiaryPhone?: string;
+  beneficiaryRelation?: string;
+  deliveryAddress?: string;
 };
 
 export type Profile = {
@@ -31,21 +36,53 @@ export type Profile = {
 export type ChatMessage = { from: "me" | "them"; text: string; at: string };
 export type Chat = { id: string; name: string; messages: ChatMessage[] };
 
+export type FamilyMember = {
+  id: string;
+  name: string;
+  phone: string;
+  role: "owner" | "member";
+  invitedBy?: string;
+};
+
+export type FamilyCartItem = {
+  id: string;
+  name: string;
+  quantity: number;
+  addedBy: string;
+  createdAt: string;
+};
+
+export type FamilyState = {
+  id: string;
+  name: string;
+  code: string;
+  members: FamilyMember[];
+  items: FamilyCartItem[];
+};
+
 const PROFILE_KEY = "fazaa.profile.v2";
 const REQUESTS_KEY = "fazaa.requests.v2";
 const FAVORITES_KEY = "fazaa.favorites.v2";
 const CHATS_KEY = "fazaa.chats.v2";
+const FAMILY_KEY = "fazaa.family.v1";
+const WELCOME_KEY = "fazaa.welcome.v1";
 
-export const REQUEST_TYPES: { id: RequestType; label: string }[] = [
-  { id: "urgent", label: "مساعدة عاجلة" },
-  { id: "delivery", label: "توصيل" },
-  { id: "lost", label: "مفقودات" },
-  { id: "service", label: "خدمات" },
-  { id: "other", label: "أخرى" },
-];
+export const REQUEST_TYPE_LABELS: Record<RequestType, string> = {
+  urgent: "مساعدة عاجلة",
+  delivery: "توصيل",
+  lost: "مفقودات",
+  service: "خدمات",
+  other: "أخرى",
+};
 
-export const typeLabel = (t: RequestType) =>
-  REQUEST_TYPES.find((r) => r.id === t)?.label ?? "أخرى";
+export const REQUEST_TYPES: { id: RequestType; label: string }[] = Object.entries(
+  REQUEST_TYPE_LABELS,
+).flatMap(([id, label]) => {
+  if (id === "urgent" || id === "lost") return [];
+  return [{ id: id as RequestType, label }];
+});
+
+export const typeLabel = (t: RequestType) => REQUEST_TYPE_LABELS[t] ?? "أخرى";
 
 const seedRequests: HelpRequest[] = [
   {
@@ -88,7 +125,11 @@ const seedChats: Chat[] = [
     id: "c1",
     name: "أميرة",
     messages: [
-      { from: "them", text: "أهلاً! شفت طلبك، أقدر أساعدك اليوم.", at: new Date(Date.now() - 3600000).toISOString() },
+      {
+        from: "them",
+        text: "أهلاً! شفت طلبك، أقدر أساعدك اليوم.",
+        at: new Date(Date.now() - 3600000).toISOString(),
+      },
     ],
   },
 ];
@@ -109,9 +150,20 @@ type StoreValue = {
   requests: HelpRequest[];
   favorites: string[];
   chats: Chat[];
+  family: FamilyState | null;
+  welcomeComplete: boolean;
   saveProfile: (p: Profile) => void;
   signOut: () => void;
-  addRequest: (r: Omit<HelpRequest, "id" | "createdAt" | "status" | "owner" | "mine">) => HelpRequest;
+  completeWelcome: () => void;
+  createFamily: (name: string) => FamilyState | null;
+  joinFamily: (code: string, name?: string) => FamilyState | null;
+  inviteFamilyMember: (name: string, phone: string) => void;
+  addFamilyItem: (itemName: string) => void;
+  updateFamilyName: (name: string) => void;
+  setFamily: (family: FamilyState | null) => void;
+  addRequest: (
+    r: Omit<HelpRequest, "id" | "createdAt" | "status" | "owner" | "mine">,
+  ) => HelpRequest;
   updateRequestStatus: (id: string, status: HelpRequest["status"]) => void;
   deleteRequest: (id: string) => void;
   toggleFavorite: (id: string) => void;
@@ -129,18 +181,26 @@ export function timeAgo(iso: string) {
   return `منذ ${Math.floor(hours / 24)} يوم`;
 }
 
+function makeFamilyCode() {
+  return Math.random().toString(36).slice(2, 8).toUpperCase();
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [requests, setRequests] = useState<HelpRequest[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
+  const [family, setFamily] = useState<FamilyState | null>(null);
+  const [welcomeComplete, setWelcomeComplete] = useState(false);
 
   useEffect(() => {
     setProfile(load<Profile | null>(PROFILE_KEY, null));
     setRequests(load<HelpRequest[]>(REQUESTS_KEY, seedRequests));
     setFavorites(load<string[]>(FAVORITES_KEY, []));
     setChats(load<Chat[]>(CHATS_KEY, seedChats));
+    setFamily(load<FamilyState | null>(FAMILY_KEY, null));
+    setWelcomeComplete(load<boolean>(WELCOME_KEY, false));
     setHydrated(true);
   }, []);
 
@@ -156,9 +216,118 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (hydrated) window.localStorage.setItem(CHATS_KEY, JSON.stringify(chats));
   }, [chats, hydrated]);
+  useEffect(() => {
+    if (hydrated) window.localStorage.setItem(FAMILY_KEY, JSON.stringify(family));
+  }, [family, hydrated]);
+  useEffect(() => {
+    if (hydrated) window.localStorage.setItem(WELCOME_KEY, JSON.stringify(welcomeComplete));
+  }, [welcomeComplete, hydrated]);
 
   const saveProfile = useCallback((p: Profile) => setProfile(p), []);
   const signOut = useCallback(() => setProfile(null), []);
+  const completeWelcome = useCallback(() => setWelcomeComplete(true), []);
+
+  const createFamily = useCallback(
+    (name: string) => {
+      if (!profile) return null;
+      const nextFamily: FamilyState = {
+        id: `family-${Date.now()}`,
+        name: name.trim() || "عائلتي",
+        code: makeFamilyCode(),
+        members: [
+          {
+            id: `member-${Date.now()}`,
+            name: profile.fullName,
+            phone: profile.phone,
+            role: "owner",
+          },
+        ],
+        items: [],
+      };
+      setFamily(nextFamily);
+      return nextFamily;
+    },
+    [profile],
+  );
+
+  const joinFamily = useCallback(
+    (code: string, name?: string) => {
+      if (!profile) return null;
+      const normalizedCode = code.trim().toUpperCase();
+      if (!normalizedCode) return null;
+      const nextFamily: FamilyState = {
+        id: `family-${Date.now()}`,
+        name: name?.trim() || "عائلة مشتركة",
+        code: normalizedCode,
+        members: [
+          {
+            id: `member-${Date.now()}`,
+            name: profile.fullName,
+            phone: profile.phone,
+            role: "member",
+          },
+        ],
+        items: [],
+      };
+      setFamily(nextFamily);
+      return nextFamily;
+    },
+    [profile],
+  );
+
+  const inviteFamilyMember = useCallback(
+    (name: string, phone: string) => {
+      if (!family || !name.trim() || !phone.trim()) return;
+      setFamily((current) => {
+        if (!current) return current;
+        const exists = current.members.some(
+          (member) => member.phone === phone.trim() || member.name === name.trim(),
+        );
+        if (exists) return current;
+        return {
+          ...current,
+          members: [
+            ...current.members,
+            {
+              id: `member-${Date.now()}`,
+              name: name.trim(),
+              phone: phone.trim(),
+              role: "member",
+              invitedBy: profile?.fullName || "فزعة",
+            },
+          ],
+        };
+      });
+    },
+    [family, profile],
+  );
+
+  const addFamilyItem = useCallback(
+    (itemName: string) => {
+      if (!family || !itemName.trim()) return;
+      const nextItem: FamilyCartItem = {
+        id: `family-item-${Date.now()}`,
+        name: itemName.trim(),
+        quantity: 1,
+        addedBy: profile?.fullName || "أنا",
+        createdAt: new Date().toISOString(),
+      };
+      setFamily((current) =>
+        current ? { ...current, items: [nextItem, ...current.items] } : current,
+      );
+    },
+    [family, profile],
+  );
+
+  const updateFamilyName = useCallback(
+    (name: string) => {
+      if (!family) return;
+      setFamily((current) =>
+        current ? { ...current, name: name.trim() || current.name } : current,
+      );
+    },
+    [family],
+  );
 
   const addRequest = useCallback<StoreValue["addRequest"]>(
     (r) => {
@@ -186,9 +355,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleFavorite = useCallback((id: string) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
-    );
+    setFavorites((prev) => (prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]));
   }, []);
 
   const sendMessage = useCallback((chatId: string, text: string) => {
@@ -216,8 +383,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       requests,
       favorites,
       chats,
+      family,
+      welcomeComplete,
       saveProfile,
       signOut,
+      completeWelcome,
+      createFamily,
+      joinFamily,
+      inviteFamilyMember,
+      addFamilyItem,
+      updateFamilyName,
+      setFamily,
       addRequest,
       updateRequestStatus,
       deleteRequest,
@@ -225,7 +401,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       sendMessage,
       timeAgo,
     }),
-    [hydrated, profile, requests, favorites, chats, saveProfile, signOut, addRequest, updateRequestStatus, deleteRequest, toggleFavorite, sendMessage],
+    [
+      hydrated,
+      profile,
+      requests,
+      favorites,
+      chats,
+      family,
+      welcomeComplete,
+      saveProfile,
+      signOut,
+      completeWelcome,
+      createFamily,
+      joinFamily,
+      inviteFamilyMember,
+      addFamilyItem,
+      updateFamilyName,
+      addRequest,
+      updateRequestStatus,
+      deleteRequest,
+      toggleFavorite,
+      sendMessage,
+    ],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

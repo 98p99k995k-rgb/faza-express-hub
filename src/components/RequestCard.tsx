@@ -2,9 +2,9 @@ import { Heart, MapPin } from "lucide-react";
 import { timeAgo, typeLabel, useStore, type HelpRequest } from "@/lib/store";
 
 const statusStyles: Record<HelpRequest["status"], string> = {
-  "مفتوح": "bg-primary/10 text-primary",
+  مفتوح: "bg-primary/10 text-primary",
   "قيد التنفيذ": "bg-accent/10 text-accent",
-  "مكتمل": "bg-muted text-muted-foreground",
+  مكتمل: "bg-muted text-muted-foreground",
 };
 
 export function RequestCard({ request }: { request: HelpRequest }) {
@@ -31,9 +31,7 @@ export function RequestCard({ request }: { request: HelpRequest }) {
           onClick={() => toggleFavorite(request.id)}
           className="shrink-0 text-muted-foreground transition-colors"
         >
-          <Heart
-            className={`h-5 w-5 ${fav ? "fill-primary text-primary" : ""}`}
-          />
+          <Heart className={`h-5 w-5 ${fav ? "fill-primary text-primary" : ""}`} />
         </button>
       </div>
       <div className="mt-3 flex items-center justify-between text-xs">
@@ -45,6 +43,11 @@ export function RequestCard({ request }: { request: HelpRequest }) {
           {typeLabel(request.type)} · {request.status}
         </span>
       </div>
+      {request.forSomeoneElse && (
+        <div className="mt-3 rounded-xl bg-primary/5 px-3 py-2 text-[11px] font-bold text-primary">
+          مخصص لمستفيد آخر · {request.beneficiaryName || "مستفيد"}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Car, ChevronRight, Ellipsis, Search, Siren, Wrench } from "lucide-react";
+import { Car, ChevronRight, Ellipsis, Gift, Search, Wrench } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
@@ -22,10 +22,8 @@ export const Route = createFileRoute("/create")({
   component: CreatePage,
 });
 
-const typeOptions: { id: RequestType; label: string; icon: typeof Siren }[] = [
-  { id: "urgent", label: "مساعدة عاجلة", icon: Siren },
+const typeOptions: { id: RequestType; label: string; icon: typeof Car }[] = [
   { id: "delivery", label: "توصيل", icon: Car },
-  { id: "lost", label: "مفقودات", icon: Search },
   { id: "service", label: "خدمات", icon: Wrench },
   { id: "other", label: "أخرى", icon: Ellipsis },
 ];
@@ -40,14 +38,33 @@ function CreatePage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [city, setCity] = useState(profile?.city ?? "");
+  const [forSomeoneElse, setForSomeoneElse] = useState(false);
+  const [beneficiaryName, setBeneficiaryName] = useState("");
+  const [beneficiaryPhone, setBeneficiaryPhone] = useState("");
+  const [beneficiaryRelation, setBeneficiaryRelation] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
 
   const submit = () => {
     if (!type || !title.trim() || !description.trim() || !city.trim()) {
       toast.error("فضلاً أكمل جميع الحقول");
       return;
     }
-    addRequest({ type, title: title.trim(), description: description.trim(), city: city.trim() });
-    toast.success("تم نشر طلبك بنجاح");
+    if (forSomeoneElse && (!beneficiaryName.trim() || !beneficiaryPhone.trim())) {
+      toast.error("فضلاً أدخل بيانات المستفيد");
+      return;
+    }
+    addRequest({
+      type,
+      title: title.trim(),
+      description: description.trim(),
+      city: city.trim(),
+      forSomeoneElse,
+      beneficiaryName: forSomeoneElse ? beneficiaryName.trim() : undefined,
+      beneficiaryPhone: forSomeoneElse ? beneficiaryPhone.trim() : undefined,
+      beneficiaryRelation: forSomeoneElse ? beneficiaryRelation.trim() : undefined,
+      deliveryAddress: forSomeoneElse ? deliveryAddress.trim() || city.trim() : undefined,
+    });
+    toast.success(forSomeoneElse ? "تم إنشاء الطلب لمستفيد آخر بنجاح" : "تم نشر طلبك بنجاح");
     navigate({ to: "/orders" });
   };
 
@@ -88,16 +105,92 @@ function CreatePage() {
                       : "border-border bg-card text-foreground shadow-card-soft"
                   }`}
                 >
-                  <opt.icon className={`h-7 w-7 ${opt.id === "urgent" ? "text-primary" : "text-accent"}`} />
+                  <opt.icon className="h-7 w-7 text-accent" />
                   <span className="text-sm font-bold">{opt.label}</span>
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={() => {
+                  setForSomeoneElse(true);
+                  setType("other");
+                  setStep(2);
+                }}
+                className="col-span-2 flex items-center justify-center gap-2 rounded-3xl border border-primary/30 bg-primary/5 p-4 text-sm font-bold text-primary"
+              >
+                <Gift className="h-5 w-5" />
+                فزعة لغيرك
+              </button>
             </div>
           </>
         )}
 
         {step === 2 && (
           <div className="mt-6 space-y-4">
+            <button
+              type="button"
+              onClick={() => setForSomeoneElse((value) => !value)}
+              className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-sm font-bold ${
+                forSomeoneElse
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border bg-card text-foreground"
+              }`}
+            >
+              <span>طلب لشخص آخر</span>
+              <span className="rounded-full bg-secondary px-2 py-0.5 text-xs">
+                {forSomeoneElse ? "مفعّل" : "غير مفعّل"}
+              </span>
+            </button>
+
+            {forSomeoneElse && (
+              <div className="space-y-3 rounded-2xl border border-primary/20 bg-primary/5 p-3">
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-foreground">
+                    اسم المستفيد
+                  </label>
+                  <input
+                    value={beneficiaryName}
+                    onChange={(e) => setBeneficiaryName(e.target.value)}
+                    placeholder="مثال: سارة أحمد"
+                    className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-foreground">
+                    رقم المستفيد
+                  </label>
+                  <input
+                    value={beneficiaryPhone}
+                    onChange={(e) => setBeneficiaryPhone(e.target.value)}
+                    placeholder="05XXXXXXXX"
+                    className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-foreground">
+                    صلة القرابة
+                  </label>
+                  <input
+                    value={beneficiaryRelation}
+                    onChange={(e) => setBeneficiaryRelation(e.target.value)}
+                    placeholder="أختي / جدي / صديقتي"
+                    className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-foreground">
+                    عنوان التوصيل
+                  </label>
+                  <input
+                    value={deliveryAddress}
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                    placeholder="الحي / العنوان التفصيلي"
+                    className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+              </div>
+            )}
+
             <div>
               <label className="mb-1.5 block text-sm font-bold text-foreground">عنوان الطلب</label>
               <input
@@ -131,7 +224,7 @@ function CreatePage() {
               onClick={submit}
               className="w-full rounded-full bg-brand-gradient py-4 text-base font-extrabold text-primary-foreground shadow-brand transition-transform active:scale-[0.98]"
             >
-              نشر الطلب
+              {forSomeoneElse ? "مراجعة الطلب والدفع" : "نشر الطلب"}
             </button>
           </div>
         )}

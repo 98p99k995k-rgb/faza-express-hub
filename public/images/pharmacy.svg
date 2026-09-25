@@ -1,0 +1,39 @@
+<svg width="420" height="260" viewBox="0 0 420 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pharmaBg" x1="34" y1="18" x2="393" y2="243" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0FFF8"/>
+      <stop offset="0.5" stop-color="#F6F3FF"/>
+      <stop offset="1" stop-color="#EEF7FF"/>
+    </linearGradient>
+    <linearGradient id="pharmaCard" x1="117" y1="76" x2="289" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F6FBFF"/>
+    </linearGradient>
+  </defs>
+  <rect width="420" height="260" rx="32" fill="url(#pharmaBg)"/>
+  <circle cx="82" cy="65" r="42" fill="#D8F6E6"/>
+  <circle cx="335" cy="192" r="50" fill="#F7D7E8"/>
+  <circle cx="348" cy="74" r="18" fill="#E3F2FF"/>
+
+  <g>
+    <rect x="124" y="78" width="172" height="118" rx="24" fill="url(#pharmaCard)"/>
+    <rect x="149" y="56" width="122" height="36" rx="18" fill="#E4F9F0"/>
+    <path d="M198 74H223V110H259V134H223V171H198V134H162V110H198V74Z" fill="#31B67A"/>
+    <rect x="140" y="170" width="140" height="12" rx="6" fill="#DDF3EA"/>
+    <rect x="152" y="105" width="14" height="57" rx="7" fill="#BDECD6"/>
+    <rect x="255" y="105" width="14" height="57" rx="7" fill="#BDECD6"/>
+    <path d="M163 112C177 96 192 89 210 89C228 89 242 96 256 112" stroke="#7AD3AE" stroke-width="9" stroke-linecap="round"/>
+
+    <rect x="90" y="141" width="28" height="52" rx="14" fill="#8EC8FF" fill-opacity="0.9"/>
+    <rect x="302" y="141" width="28" height="52" rx="14" fill="#F7B9D1" fill-opacity="0.8"/>
+    <path d="M96 154L99 146L104 141L110 146L113 154L108 160L101 160L96 154Z" fill="#DFF0FF"/>
+    <path d="M308 154L311 146L316 141L322 146L325 154L320 160L313 160L308 154Z" fill="#FFE4F0"/>
+
+    <path d="M113 120C126 110 138 107 150 106" stroke="#7FA8FF" stroke-width="8" stroke-linecap="round"/>
+    <path d="M306 120C293 110 281 107 269 106" stroke="#F5A0BF" stroke-width="8" stroke-linecap="round"/>
+
+    <rect x="278" y="51" width="58" height="54" rx="16" fill="#EFF7FF"/>
+    <path d="M288 78H312" stroke="#4F92FF" stroke-width="7" stroke-linecap="round"/>
+    <path d="M300 66V90" stroke="#4F92FF" stroke-width="7" stroke-linecap="round"/>
+  </g>
+</svg>

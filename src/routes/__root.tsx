@@ -2,7 +2,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
+  Navigate,
   createRootRouteWithContext,
+  useLocation,
   useRouter,
   HeadContent,
   Scripts,
@@ -11,7 +13,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { StoreProvider } from "@/lib/store";
+import { StoreProvider, useStore } from "@/lib/store";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -116,14 +118,29 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AppRoutes() {
+  const { hydrated, welcomeComplete } = useStore();
+  const location = useLocation();
+
+  if (!hydrated) return null;
+  if (!welcomeComplete && location.pathname !== "/welcome") {
+    return <Navigate to="/welcome" replace />;
+  }
+
+  if (welcomeComplete && location.pathname === "/welcome") {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <StoreProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <AppRoutes />
         <Toaster position="top-center" richColors />
       </StoreProvider>
     </QueryClientProvider>
