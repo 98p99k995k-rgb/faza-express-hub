@@ -8,6 +8,7 @@ import {
   Settings,
   CircleHelp,
   Users,
+  WalletCards,
 } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { useStore } from "@/lib/store";
@@ -56,6 +57,7 @@ function ProfilePage() {
     { icon: ClipboardList, label: "طلباتي", badge: myRequests.length, to: "/orders" as const },
     { icon: Heart, label: "مفضلاتي", badge: favorites.length, to: "/orders" as const },
     { icon: Users, label: "العائلة", to: "/family" as const },
+    { icon: WalletCards, label: "طرق الدفع", to: "/payment-methods" as const },
     { icon: Settings, label: "الإعدادات" },
     { icon: CircleHelp, label: "المساعدة والدعم" },
     { icon: Info, label: "عن فزعة" },

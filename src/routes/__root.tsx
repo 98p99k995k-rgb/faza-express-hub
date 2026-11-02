@@ -127,10 +127,6 @@ function AppRoutes() {
     return <Navigate to="/welcome" replace />;
   }
 
-  if (welcomeComplete && location.pathname === "/welcome") {
-    return <Navigate to="/" replace />;
-  }
-
   return <Outlet />;
 }
 

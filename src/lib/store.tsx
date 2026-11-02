@@ -65,8 +65,6 @@ const REQUESTS_KEY = "fazaa.requests.v2";
 const FAVORITES_KEY = "fazaa.favorites.v2";
 const CHATS_KEY = "fazaa.chats.v2";
 const FAMILY_KEY = "fazaa.family.v1";
-const WELCOME_KEY = "fazaa.welcome.v1";
-
 export const REQUEST_TYPE_LABELS: Record<RequestType, string> = {
   urgent: "مساعدة عاجلة",
   delivery: "توصيل",
@@ -200,7 +198,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setFavorites(load<string[]>(FAVORITES_KEY, []));
     setChats(load<Chat[]>(CHATS_KEY, seedChats));
     setFamily(load<FamilyState | null>(FAMILY_KEY, null));
-    setWelcomeComplete(load<boolean>(WELCOME_KEY, false));
     setHydrated(true);
   }, []);
 
@@ -219,10 +216,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (hydrated) window.localStorage.setItem(FAMILY_KEY, JSON.stringify(family));
   }, [family, hydrated]);
-  useEffect(() => {
-    if (hydrated) window.localStorage.setItem(WELCOME_KEY, JSON.stringify(welcomeComplete));
-  }, [welcomeComplete, hydrated]);
-
   const saveProfile = useCallback((p: Profile) => setProfile(p), []);
   const signOut = useCallback(() => setProfile(null), []);
   const completeWelcome = useCallback(() => setWelcomeComplete(true), []);

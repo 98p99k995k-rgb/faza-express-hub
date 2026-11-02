@@ -15,6 +15,7 @@ import { Route as ChatsRouteImport } from './routes/chats'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as FamilyRouteImport } from './routes/family'
 import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as PaymentMethodsRouteImport } from './routes/payment-methods'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ChatChatIdRouteImport } from './routes/chat.$chatId'
@@ -49,6 +50,11 @@ const OrdersRoute = OrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PaymentMethodsRoute = PaymentMethodsRouteImport.update({
+  id: '/payment-methods',
+  path: '/payment-methods',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/create': typeof CreateRoute
   '/family': typeof FamilyRoute
   '/orders': typeof OrdersRoute
+  '/payment-methods': typeof PaymentMethodsRoute
   '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/create': typeof CreateRoute
   '/family': typeof FamilyRoute
   '/orders': typeof OrdersRoute
+  '/payment-methods': typeof PaymentMethodsRoute
   '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/create': typeof CreateRoute
   '/family': typeof FamilyRoute
   '/orders': typeof OrdersRoute
+  '/payment-methods': typeof PaymentMethodsRoute
   '/profile': typeof ProfileRoute
   '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/family'
     | '/orders'
+    | '/payment-methods'
     | '/profile'
     | '/welcome'
     | '/chat/$chatId'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/family'
     | '/orders'
+    | '/payment-methods'
     | '/profile'
     | '/welcome'
     | '/chat/$chatId'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/family'
     | '/orders'
+    | '/payment-methods'
     | '/profile'
     | '/welcome'
     | '/chat/$chatId'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   CreateRoute: typeof CreateRoute
   FamilyRoute: typeof FamilyRoute
   OrdersRoute: typeof OrdersRoute
+  PaymentMethodsRoute: typeof PaymentMethodsRoute
   ProfileRoute: typeof ProfileRoute
   WelcomeRoute: typeof WelcomeRoute
   ChatChatIdRoute: typeof ChatChatIdRoute
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/payment-methods': {
+      id: '/payment-methods'
+      path: '/payment-methods'
+      fullPath: '/payment-methods'
+      preLoaderRoute: typeof PaymentMethodsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreateRoute: CreateRoute,
   FamilyRoute: FamilyRoute,
   OrdersRoute: OrdersRoute,
+  PaymentMethodsRoute: PaymentMethodsRoute,
   ProfileRoute: ProfileRoute,
   WelcomeRoute: WelcomeRoute,
   ChatChatIdRoute: ChatChatIdRoute,
