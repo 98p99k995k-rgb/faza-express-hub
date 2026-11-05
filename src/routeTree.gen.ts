@@ -10,24 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CafesRouteImport } from './routes/cafes'
 import { Route as ChatsRouteImport } from './routes/chats'
 import { Route as CreateRouteImport } from './routes/create'
+import { Route as EditProfileRouteImport } from './routes/edit-profile'
 import { Route as FamilyRouteImport } from './routes/family'
+import { Route as HelpRequestRouteImport } from './routes/help-request'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as PaymentMethodsRouteImport } from './routes/payment-methods'
+import { Route as PharmaciesRouteImport } from './routes/pharmacies'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RestaurantsRouteImport } from './routes/restaurants'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ChatChatIdRouteImport } from './routes/chat.$chatId'
+import { Route as PlaceCategoryPlaceIdRouteImport } from './routes/place.$category.$placeId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CafesRoute = CafesRouteImport.update({
+  id: '/cafes',
+  path: '/cafes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatsRoute = ChatsRouteImport.update({
@@ -40,9 +59,19 @@ const CreateRoute = CreateRouteImport.update({
   path: '/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditProfileRoute = EditProfileRouteImport.update({
+  id: '/edit-profile',
+  path: '/edit-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FamilyRoute = FamilyRouteImport.update({
   id: '/family',
   path: '/family',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRequestRoute = HelpRequestRouteImport.update({
+  id: '/help-request',
+  path: '/help-request',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrdersRoute = OrdersRouteImport.update({
@@ -55,9 +84,29 @@ const PaymentMethodsRoute = PaymentMethodsRouteImport.update({
   path: '/payment-methods',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PharmaciesRoute = PharmaciesRouteImport.update({
+  id: '/pharmacies',
+  path: '/pharmacies',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RestaurantsRoute = RestaurantsRouteImport.update({
+  id: '/restaurants',
+  path: '/restaurants',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -70,94 +119,162 @@ const ChatChatIdRoute = ChatChatIdRouteImport.update({
   path: '/chat/$chatId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlaceCategoryPlaceIdRoute = PlaceCategoryPlaceIdRouteImport.update({
+  id: '/place/$category/$placeId',
+  path: '/place/$category/$placeId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/cafes': typeof CafesRoute
   '/chats': typeof ChatsRoute
   '/create': typeof CreateRoute
+  '/edit-profile': typeof EditProfileRoute
   '/family': typeof FamilyRoute
+  '/help-request': typeof HelpRequestRoute
   '/orders': typeof OrdersRoute
   '/payment-methods': typeof PaymentMethodsRoute
+  '/pharmacies': typeof PharmaciesRoute
   '/profile': typeof ProfileRoute
+  '/restaurants': typeof RestaurantsRoute
+  '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
+  '/place/$category/$placeId': typeof PlaceCategoryPlaceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/cafes': typeof CafesRoute
   '/chats': typeof ChatsRoute
   '/create': typeof CreateRoute
+  '/edit-profile': typeof EditProfileRoute
   '/family': typeof FamilyRoute
+  '/help-request': typeof HelpRequestRoute
   '/orders': typeof OrdersRoute
   '/payment-methods': typeof PaymentMethodsRoute
+  '/pharmacies': typeof PharmaciesRoute
   '/profile': typeof ProfileRoute
+  '/restaurants': typeof RestaurantsRoute
+  '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
+  '/place/$category/$placeId': typeof PlaceCategoryPlaceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/cafes': typeof CafesRoute
   '/chats': typeof ChatsRoute
   '/create': typeof CreateRoute
+  '/edit-profile': typeof EditProfileRoute
   '/family': typeof FamilyRoute
+  '/help-request': typeof HelpRequestRoute
   '/orders': typeof OrdersRoute
   '/payment-methods': typeof PaymentMethodsRoute
+  '/pharmacies': typeof PharmaciesRoute
   '/profile': typeof ProfileRoute
+  '/restaurants': typeof RestaurantsRoute
+  '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
   '/chat/$chatId': typeof ChatChatIdRoute
+  '/place/$category/$placeId': typeof PlaceCategoryPlaceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/auth'
+    | '/cafes'
     | '/chats'
     | '/create'
+    | '/edit-profile'
     | '/family'
+    | '/help-request'
     | '/orders'
     | '/payment-methods'
+    | '/pharmacies'
     | '/profile'
+    | '/restaurants'
+    | '/settings'
+    | '/support'
     | '/welcome'
     | '/chat/$chatId'
+    | '/place/$category/$placeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/auth'
+    | '/cafes'
     | '/chats'
     | '/create'
+    | '/edit-profile'
     | '/family'
+    | '/help-request'
     | '/orders'
     | '/payment-methods'
+    | '/pharmacies'
     | '/profile'
+    | '/restaurants'
+    | '/settings'
+    | '/support'
     | '/welcome'
     | '/chat/$chatId'
+    | '/place/$category/$placeId'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/auth'
+    | '/cafes'
     | '/chats'
     | '/create'
+    | '/edit-profile'
     | '/family'
+    | '/help-request'
     | '/orders'
     | '/payment-methods'
+    | '/pharmacies'
     | '/profile'
+    | '/restaurants'
+    | '/settings'
+    | '/support'
     | '/welcome'
     | '/chat/$chatId'
+    | '/place/$category/$placeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
+  CafesRoute: typeof CafesRoute
   ChatsRoute: typeof ChatsRoute
   CreateRoute: typeof CreateRoute
+  EditProfileRoute: typeof EditProfileRoute
   FamilyRoute: typeof FamilyRoute
+  HelpRequestRoute: typeof HelpRequestRoute
   OrdersRoute: typeof OrdersRoute
   PaymentMethodsRoute: typeof PaymentMethodsRoute
+  PharmaciesRoute: typeof PharmaciesRoute
   ProfileRoute: typeof ProfileRoute
+  RestaurantsRoute: typeof RestaurantsRoute
+  SettingsRoute: typeof SettingsRoute
+  SupportRoute: typeof SupportRoute
   WelcomeRoute: typeof WelcomeRoute
   ChatChatIdRoute: typeof ChatChatIdRoute
+  PlaceCategoryPlaceIdRoute: typeof PlaceCategoryPlaceIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -169,11 +286,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cafes': {
+      id: '/cafes'
+      path: '/cafes'
+      fullPath: '/cafes'
+      preLoaderRoute: typeof CafesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chats': {
@@ -190,11 +321,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/edit-profile': {
+      id: '/edit-profile'
+      path: '/edit-profile'
+      fullPath: '/edit-profile'
+      preLoaderRoute: typeof EditProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/family': {
       id: '/family'
       path: '/family'
       fullPath: '/family'
       preLoaderRoute: typeof FamilyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help-request': {
+      id: '/help-request'
+      path: '/help-request'
+      fullPath: '/help-request'
+      preLoaderRoute: typeof HelpRequestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/orders': {
@@ -211,11 +356,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentMethodsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pharmacies': {
+      id: '/pharmacies'
+      path: '/pharmacies'
+      fullPath: '/pharmacies'
+      preLoaderRoute: typeof PharmaciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/restaurants': {
+      id: '/restaurants'
+      path: '/restaurants'
+      fullPath: '/restaurants'
+      preLoaderRoute: typeof RestaurantsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/welcome': {
@@ -232,20 +405,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatChatIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/place/$category/$placeId': {
+      id: '/place/$category/$placeId'
+      path: '/place/$category/$placeId'
+      fullPath: '/place/$category/$placeId'
+      preLoaderRoute: typeof PlaceCategoryPlaceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
+  CafesRoute: CafesRoute,
   ChatsRoute: ChatsRoute,
   CreateRoute: CreateRoute,
+  EditProfileRoute: EditProfileRoute,
   FamilyRoute: FamilyRoute,
+  HelpRequestRoute: HelpRequestRoute,
   OrdersRoute: OrdersRoute,
   PaymentMethodsRoute: PaymentMethodsRoute,
+  PharmaciesRoute: PharmaciesRoute,
   ProfileRoute: ProfileRoute,
+  RestaurantsRoute: RestaurantsRoute,
+  SettingsRoute: SettingsRoute,
+  SupportRoute: SupportRoute,
   WelcomeRoute: WelcomeRoute,
   ChatChatIdRoute: ChatChatIdRoute,
+  PlaceCategoryPlaceIdRoute: PlaceCategoryPlaceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

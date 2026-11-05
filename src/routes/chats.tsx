@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BottomNav } from "@/components/BottomNav";
 import { timeAgo, useStore } from "@/lib/store";
+import { useTranslation } from "@/lib/useTranslation";
 
 export const Route = createFileRoute("/chats")({
   head: () => ({
@@ -18,17 +19,18 @@ export const Route = createFileRoute("/chats")({
 
 function ChatsPage() {
   const { chats } = useStore();
+  const { language, t } = useTranslation();
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-background pb-24">
       <header className="px-4 pt-6">
-        <h1 className="text-center text-lg font-extrabold text-foreground">المحادثات</h1>
+        <h1 className="text-center text-lg font-extrabold text-foreground">{t("المحادثات")}</h1>
       </header>
 
       <main className="mt-5 space-y-2 px-4">
         {chats.length === 0 && (
           <p className="rounded-2xl bg-card p-6 text-center text-sm text-muted-foreground shadow-card-soft">
-            لا توجد محادثات بعد. ستظهر هنا عند تواصلك مع أحد المساعدين.
+            {t("لا توجد محادثات بعد. ستظهر هنا عند تواصلك مع أحد المساعدين.")}
           </p>
         )}
         {chats.map((chat) => {
@@ -47,11 +49,13 @@ function ChatsPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-foreground">{chat.name}</span>
                   {last && (
-                    <span className="text-[10px] text-muted-foreground">{timeAgo(last.at)}</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {timeAgo(last.at, language)}
+                    </span>
                   )}
                 </div>
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                  {last ? last.text : "ابدأ المحادثة"}
+                  {last ? t(last.text) : t("ابدأ المحادثة")}
                 </p>
               </div>
             </Link>

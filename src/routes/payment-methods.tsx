@@ -16,6 +16,7 @@ import type { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { BottomNav } from "@/components/BottomNav";
 import { getMoyasarPublishableKey, getSupabaseClient } from "@/lib/supabase";
+import { useTranslation } from "@/lib/useTranslation";
 
 export const Route = createFileRoute("/payment-methods")({
   head: () => ({
@@ -48,6 +49,104 @@ type MoyasarTokenResponse = {
 const pendingTokenKey = "fazaa.pendingMoyasarToken";
 
 function PaymentMethodsPage() {
+  const { t } = useTranslation();
+  const [selected, setSelected] = useState<"visa" | "apple" | null>(null);
+
+  const chooseMethod = (method: "visa" | "apple") => {
+    setSelected(method);
+    toast.info(t("تم اختيار الوسيلة للعرض فقط. الدفع الإلكتروني غير مفعّل حالياً."));
+  };
+
+  return (
+    <div className="mx-auto min-h-screen max-w-md bg-background pb-28">
+      <header className="flex items-center gap-3 px-5 pb-4 pt-7">
+        <Link
+          to="/profile"
+          aria-label={t("العودة إلى الملف الشخصي")}
+          className="grid h-10 w-10 place-items-center rounded-full bg-card text-foreground shadow-card-soft"
+        >
+          <ArrowRight className="h-5 w-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-extrabold text-foreground">{t("طرق الدفع")}</h1>
+          <p className="mt-0.5 text-xs text-muted-foreground">{t("خيارات الدفع المستقبلية")}</p>
+        </div>
+        <div className="ms-auto grid h-11 w-11 place-items-center rounded-2xl bg-primary/10 text-primary">
+          <WalletCards className="h-5 w-5" />
+        </div>
+      </header>
+
+      <main className="space-y-4 px-4">
+        <section className="rounded-3xl bg-gradient-to-br from-[#4c1a99] via-[#6827ad] to-[#a43eac] p-5 text-white shadow-brand">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="h-7 w-7 shrink-0" />
+            <div>
+              <h2 className="text-base font-extrabold">{t("الدفع الإلكتروني قيد التجهيز")}</h2>
+              <p className="mt-2 text-xs leading-6 text-white/85">
+                {t(
+                  "هذه واجهة تصميمية فقط. لا تُدخل بيانات بطاقة، ولا تتم أي عملية دفع أو حفظ في هذه المرحلة.",
+                )}
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs font-bold">
+            <LockKeyhole className="h-4 w-4" /> {t("لا يتم جمع بيانات مالية")}
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="px-1 text-sm font-extrabold text-foreground">
+            {t("اختر وسيلة الدفع المفضلة للعرض")}
+          </h2>
+          <button
+            type="button"
+            onClick={() => chooseMethod("visa")}
+            aria-pressed={selected === "visa"}
+            className={`flex min-h-16 w-full items-center justify-between rounded-2xl border bg-card px-4 text-sm font-extrabold text-foreground transition-colors ${selected === "visa" ? "border-primary ring-2 ring-primary/20" : "border-border"}`}
+          >
+            <span className="flex items-center gap-3">
+              <CreditCard className="h-5 w-5 text-accent" /> Visa
+            </span>
+            {selected === "visa" && <Check className="h-5 w-5 text-primary" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => chooseMethod("apple")}
+            aria-pressed={selected === "apple"}
+            className={`flex min-h-16 w-full items-center justify-between rounded-2xl border bg-card px-4 text-sm font-extrabold text-foreground transition-colors ${selected === "apple" ? "border-primary ring-2 ring-primary/20" : "border-border"}`}
+          >
+            <span className="flex items-center gap-3">
+              <Apple className="h-5 w-5" /> Apple Pay
+            </span>
+            {selected === "apple" && <Check className="h-5 w-5 text-primary" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => toast.info(t("إضافة بطاقة ستتاح بعد ربط بوابة دفع معتمدة."))}
+            className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-primary/40 bg-primary/5 px-4 text-sm font-bold text-primary"
+          >
+            <Plus className="h-5 w-5" /> {t("إضافة بطاقة بنكية")}
+          </button>
+        </section>
+
+        <section className="rounded-2xl border border-border bg-card p-4">
+          <h2 className="text-sm font-extrabold text-foreground">{t("وسائل الدفع المحفوظة")}</h2>
+          <p className="mt-2 text-xs leading-6 text-muted-foreground">
+            {t(
+              "ستظهر وسائل الدفع هنا بعد ربط بوابة دفع معتمدة وتفعيل الحفظ الآمن. لا توجد وسائل محفوظة حالياً.",
+            )}
+          </p>
+        </section>
+        <p className="px-2 text-center text-[10px] leading-5 text-muted-foreground">
+          {t("لا تكتب رقم بطاقة أو رمز CVV في هذه الصفحة. التكامل المالي مؤجل إلى مرحلة لاحقة.")}
+        </p>
+      </main>
+      <BottomNav />
+    </div>
+  );
+}
+
+export function LegacyPaymentMethodsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [authBusy, setAuthBusy] = useState(false);

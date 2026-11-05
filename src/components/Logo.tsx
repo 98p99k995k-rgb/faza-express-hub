@@ -1,12 +1,14 @@
 import brandLogo from "@/assets/fazaa-delivery-logo.png";
 import appIcon from "@/assets/fazaa-app-icon.png";
+import { useTranslation } from "@/lib/useTranslation";
 
 export function Logo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const { t } = useTranslation();
   if (size === "lg") {
     return (
       <img
         src={brandLogo}
-        alt="فزعة — مع بعض.. دايماً أقوى"
+        alt={t("فزعة — مع بعض.. دايماً أقوى")}
         className="h-auto w-full max-w-[290px] object-contain"
       />
     );
@@ -24,7 +26,7 @@ export function Logo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
       />
       <div className="leading-tight">
         <div className={`${titleSize} font-black text-brand-gradient`}>فزعة</div>
-        <div className="text-[9px] font-bold text-muted-foreground">توصيل جدة بسرعة</div>
+        <div className="text-[9px] font-bold text-muted-foreground">{t("توصيل جدة بسرعة")}</div>
       </div>
     </div>
   );

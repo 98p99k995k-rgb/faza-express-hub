@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   ChevronLeft,
   ClipboardList,
-  Heart,
+  ContactRound,
   Info,
   LogOut,
   Settings,
@@ -12,14 +12,15 @@ import {
 } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { useStore } from "@/lib/store";
+import { useTranslation } from "@/lib/useTranslation";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
       { title: "الملف الشخصي – فزعة" },
-      { name: "description", content: "حسابك وطلباتك ومفضلاتك في فزعة." },
+      { name: "description", content: "بيانات حسابك وخدماتك في فزعة." },
       { property: "og:title", content: "الملف الشخصي – فزعة" },
-      { property: "og:description", content: "حسابك وطلباتك ومفضلاتك في فزعة." },
+      { property: "og:description", content: "بيانات حسابك وخدماتك في فزعة." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -28,7 +29,8 @@ export const Route = createFileRoute("/profile")({
 });
 
 function ProfilePage() {
-  const { profile, requests, favorites, signOut, hydrated } = useStore();
+  const { profile, requests, signOut, hydrated } = useStore();
+  const { language, t } = useTranslation();
   const navigate = useNavigate();
   const myRequests = requests.filter((r) => r.mine);
 
@@ -38,15 +40,15 @@ function ProfilePage() {
         <div className="grid h-20 w-20 place-items-center rounded-full bg-secondary text-3xl font-extrabold text-accent">
           ؟
         </div>
-        <h1 className="text-lg font-extrabold text-foreground">لم تسجّل دخولك بعد</h1>
+        <h1 className="text-lg font-extrabold text-foreground">{t("لم تسجّل دخولك بعد")}</h1>
         <p className="text-sm text-muted-foreground">
-          سجّل دخولك لتتمكن من إنشاء الطلبات ومتابعتها وحفظ مفضلاتك.
+          {t("سجّل دخولك لتتمكن من إنشاء الطلبات ومتابعتها.")}
         </p>
         <Link
           to="/auth"
           className="w-full rounded-full bg-brand-gradient py-3.5 text-sm font-extrabold text-primary-foreground shadow-brand"
         >
-          تسجيل الدخول
+          {t("تسجيل الدخول")}
         </Link>
         <BottomNav />
       </div>
@@ -54,25 +56,26 @@ function ProfilePage() {
   }
 
   const menu = [
-    { icon: ClipboardList, label: "طلباتي", badge: myRequests.length, to: "/orders" as const },
-    { icon: Heart, label: "مفضلاتي", badge: favorites.length, to: "/orders" as const },
-    { icon: Users, label: "العائلة", to: "/family" as const },
-    { icon: WalletCards, label: "طرق الدفع", to: "/payment-methods" as const },
-    { icon: Settings, label: "الإعدادات" },
-    { icon: CircleHelp, label: "المساعدة والدعم" },
-    { icon: Info, label: "عن فزعة" },
+    { icon: ContactRound, label: t("البيانات الشخصية"), to: "/edit-profile" as const },
+    { icon: ClipboardList, label: t("طلباتي"), badge: myRequests.length, to: "/orders" as const },
+    { icon: Users, label: t("العائلة"), to: "/family" as const },
+    { icon: WalletCards, label: t("طرق الدفع"), to: "/payment-methods" as const },
+    { icon: Settings, label: t("الإعدادات"), to: "/settings" as const },
+    { icon: CircleHelp, label: t("المساعدة والدعم"), to: "/support" as const },
+    { icon: Info, label: t("عن فزعة"), to: "/about" as const },
   ];
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-background pb-24">
       <header className="flex flex-col items-center pt-10">
         <div className="grid h-20 w-20 place-items-center rounded-full bg-brand-gradient text-3xl font-extrabold text-primary-foreground shadow-brand">
-          {profile?.fullName.slice(0, 1) || "ف"}
+          {profile?.fullName.slice(0, 1) || (language === "ar" ? "ف" : "F")}
         </div>
         <h1 className="mt-3 text-xl font-extrabold text-foreground">{profile?.fullName}</h1>
-        <p className="mt-1 flex items-center gap-1 text-xs text-primary">
-          <Heart className="h-3 w-3 fill-primary" /> دايماً معك
+        <p className="mt-1 text-xs text-muted-foreground" dir="ltr">
+          {profile?.phone}
         </p>
+        {profile?.city && <p className="mt-1 text-xs text-muted-foreground">{profile.city}</p>}
       </header>
 
       <main className="mt-6 space-y-1 px-4">
@@ -80,7 +83,7 @@ function ProfilePage() {
           <button
             key={item.label}
             type="button"
-            onClick={() => item.to && navigate({ to: item.to })}
+            onClick={() => navigate({ to: item.to })}
             className="flex w-full items-center justify-between rounded-2xl px-3 py-3.5 transition-colors hover:bg-card"
           >
             <ChevronLeft className="h-4 w-4 text-muted-foreground" />
@@ -104,7 +107,7 @@ function ProfilePage() {
           }}
           className="flex w-full items-center justify-end gap-2 rounded-2xl px-3 py-3.5 text-sm font-bold text-primary transition-colors hover:bg-card"
         >
-          تسجيل الخروج
+          {t("تسجيل الخروج")}
           <LogOut className="h-5 w-5" />
         </button>
       </main>

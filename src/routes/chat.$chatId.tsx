@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronRight, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
+import { useTranslation } from "@/lib/useTranslation";
 
 export const Route = createFileRoute("/chat/$chatId")({
   head: () => ({
@@ -21,6 +22,7 @@ function ChatPage() {
   const { chatId } = Route.useParams();
   const navigate = useNavigate();
   const { chats, sendMessage } = useStore();
+  const { t } = useTranslation();
   const chat = chats.find((c) => c.id === chatId);
   const [text, setText] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
@@ -32,13 +34,13 @@ function ChatPage() {
   if (!chat) {
     return (
       <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-3 bg-background px-4">
-        <p className="text-sm text-muted-foreground">هذه المحادثة غير موجودة.</p>
+        <p className="text-sm text-muted-foreground">{t("هذه المحادثة غير موجودة.")}</p>
         <button
           type="button"
           onClick={() => navigate({ to: "/chats" })}
           className="rounded-full bg-brand-gradient px-6 py-2.5 text-sm font-bold text-primary-foreground shadow-brand"
         >
-          العودة للمحادثات
+          {t("العودة للمحادثات")}
         </button>
       </div>
     );
@@ -55,7 +57,7 @@ function ChatPage() {
       <header className="flex items-center gap-3 border-b border-border bg-card px-4 py-3">
         <button
           type="button"
-          aria-label="رجوع"
+          aria-label={t("رجوع")}
           onClick={() => navigate({ to: "/chats" })}
           className="grid h-9 w-9 place-items-center rounded-full text-foreground"
         >
@@ -89,12 +91,12 @@ function ChatPage() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
-          placeholder="اكتب رسالتك..."
+          placeholder={t("اكتب رسالتك...")}
           className="flex-1 rounded-full border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
         />
         <button
           type="button"
-          aria-label="إرسال"
+          aria-label={t("إرسال")}
           onClick={send}
           className="grid h-11 w-11 place-items-center rounded-full bg-brand-gradient text-primary-foreground shadow-brand transition-transform active:scale-95"
         >

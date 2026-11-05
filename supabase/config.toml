@@ -1,2 +1,5 @@
 [functions.payment-methods]
 verify_jwt = true
+
+[functions.places]
+verify_jwt = true

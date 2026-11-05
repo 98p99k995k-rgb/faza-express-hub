@@ -7,6 +7,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import {
+  applyAppAppearance,
+  loadAppSettings,
+  settingsKey,
+  type AppSettings,
+} from "@/lib/app-settings";
+import type { Language } from "@/lib/translations";
 
 export type RequestType = "urgent" | "delivery" | "lost" | "service" | "other";
 
@@ -25,6 +32,8 @@ export type HelpRequest = {
   beneficiaryPhone?: string;
   beneficiaryRelation?: string;
   deliveryAddress?: string;
+  notes?: string;
+  location?: { lat: number; lon: number };
 };
 
 export type Profile = {
@@ -144,6 +153,8 @@ function load<T>(key: string, fallback: T): T {
 
 type StoreValue = {
   hydrated: boolean;
+  language: Language;
+  theme: AppSettings["theme"];
   profile: Profile | null;
   requests: HelpRequest[];
   favorites: string[];
@@ -153,6 +164,8 @@ type StoreValue = {
   saveProfile: (p: Profile) => void;
   signOut: () => void;
   completeWelcome: () => void;
+  setLanguage: (language: Language) => void;
+  setTheme: (theme: AppSettings["theme"]) => void;
   createFamily: (name: string) => FamilyState | null;
   joinFamily: (code: string, name?: string) => FamilyState | null;
   inviteFamilyMember: (name: string, phone: string) => void;
@@ -166,17 +179,18 @@ type StoreValue = {
   deleteRequest: (id: string) => void;
   toggleFavorite: (id: string) => void;
   sendMessage: (chatId: string, text: string) => void;
-  timeAgo: (iso: string) => string;
+  timeAgo: (iso: string, language?: Language) => string;
 };
 
 const StoreContext = createContext<StoreValue | null>(null);
 
-export function timeAgo(iso: string) {
+export function timeAgo(iso: string, language: Language = "ar") {
   const mins = Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
-  if (mins < 60) return `منذ ${mins} دقيقة`;
+  const formatter = new Intl.RelativeTimeFormat(language, { numeric: "auto" });
+  if (mins < 60) return formatter.format(-mins, "minute");
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `منذ ${hours} ساعة`;
-  return `منذ ${Math.floor(hours / 24)} يوم`;
+  if (hours < 24) return formatter.format(-hours, "hour");
+  return formatter.format(-Math.floor(hours / 24), "day");
 }
 
 function makeFamilyCode() {
@@ -185,6 +199,8 @@ function makeFamilyCode() {
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
+  const [language, setLanguageState] = useState<Language>("ar");
+  const [theme, setThemeState] = useState<AppSettings["theme"]>("light");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [requests, setRequests] = useState<HelpRequest[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -193,6 +209,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [welcomeComplete, setWelcomeComplete] = useState(false);
 
   useEffect(() => {
+    const settings = loadAppSettings();
+    setLanguageState(settings.language);
+    setThemeState(settings.theme);
+    applyAppAppearance(settings);
     setProfile(load<Profile | null>(PROFILE_KEY, null));
     setRequests(load<HelpRequest[]>(REQUESTS_KEY, seedRequests));
     setFavorites(load<string[]>(FAVORITES_KEY, []));
@@ -200,6 +220,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setFamily(load<FamilyState | null>(FAMILY_KEY, null));
     setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const current = loadAppSettings();
+    const next = { ...current, language, theme };
+    try {
+      window.localStorage.setItem(settingsKey, JSON.stringify(next));
+    } catch {
+      // The current selection still applies for this session when storage is unavailable.
+    }
+    applyAppAppearance(next);
+  }, [hydrated, language, theme]);
 
   useEffect(() => {
     if (hydrated) window.localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
@@ -219,6 +251,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const saveProfile = useCallback((p: Profile) => setProfile(p), []);
   const signOut = useCallback(() => setProfile(null), []);
   const completeWelcome = useCallback(() => setWelcomeComplete(true), []);
+  const setLanguage = useCallback((next: Language) => setLanguageState(next), []);
+  const setTheme = useCallback((next: AppSettings["theme"]) => setThemeState(next), []);
 
   const createFamily = useCallback(
     (name: string) => {
@@ -372,6 +406,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const value = useMemo<StoreValue>(
     () => ({
       hydrated,
+      language,
+      theme,
       profile,
       requests,
       favorites,
@@ -381,6 +417,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       saveProfile,
       signOut,
       completeWelcome,
+      setLanguage,
+      setTheme,
       createFamily,
       joinFamily,
       inviteFamilyMember,
@@ -396,6 +434,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }),
     [
       hydrated,
+      language,
+      theme,
       profile,
       requests,
       favorites,
@@ -405,6 +445,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       saveProfile,
       signOut,
       completeWelcome,
+      setLanguage,
+      setTheme,
       createFamily,
       joinFamily,
       inviteFamilyMember,

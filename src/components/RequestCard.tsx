@@ -1,5 +1,6 @@
 import { Heart, MapPin } from "lucide-react";
 import { timeAgo, typeLabel, useStore, type HelpRequest } from "@/lib/store";
+import { useTranslation } from "@/lib/useTranslation";
 
 const statusStyles: Record<HelpRequest["status"], string> = {
   مفتوح: "bg-primary/10 text-primary",
@@ -9,6 +10,7 @@ const statusStyles: Record<HelpRequest["status"], string> = {
 
 export function RequestCard({ request }: { request: HelpRequest }) {
   const { favorites, toggleFavorite } = useStore();
+  const { language, t } = useTranslation();
   const fav = favorites.includes(request.id);
 
   return (
@@ -19,15 +21,15 @@ export function RequestCard({ request }: { request: HelpRequest }) {
             {request.owner.slice(0, 1)}
           </div>
           <div>
-            <div className="text-sm font-bold text-foreground">{request.title}</div>
+            <div className="text-sm font-bold text-foreground">{t(request.title)}</div>
             <div className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-              {request.description}
+              {t(request.description)}
             </div>
           </div>
         </div>
         <button
           type="button"
-          aria-label="مفضلة"
+          aria-label={t("مفضلة")}
           onClick={() => toggleFavorite(request.id)}
           className="shrink-0 text-muted-foreground transition-colors"
         >
@@ -37,15 +39,15 @@ export function RequestCard({ request }: { request: HelpRequest }) {
       <div className="mt-3 flex items-center justify-between text-xs">
         <span className="flex items-center gap-1 text-muted-foreground">
           <MapPin className="h-3.5 w-3.5" />
-          {request.city} · {timeAgo(request.createdAt)}
+          {t(request.city)} · {timeAgo(request.createdAt, language)}
         </span>
         <span className={`rounded-full px-2.5 py-1 font-semibold ${statusStyles[request.status]}`}>
-          {typeLabel(request.type)} · {request.status}
+          {t(typeLabel(request.type))} · {t(request.status)}
         </span>
       </div>
       {request.forSomeoneElse && (
         <div className="mt-3 rounded-xl bg-primary/5 px-3 py-2 text-[11px] font-bold text-primary">
-          مخصص لمستفيد آخر · {request.beneficiaryName || "مستفيد"}
+          {t("مخصص لمستفيد آخر")} · {request.beneficiaryName || t("مستفيد")}
         </div>
       )}
     </div>

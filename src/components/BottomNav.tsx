@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ClipboardList, Home, MessageCircle, Plus, User } from "lucide-react";
+import { useTranslation } from "@/lib/useTranslation";
 
 const items = [
   { to: "/", label: "الرئيسية", icon: Home },
@@ -11,6 +12,7 @@ const items = [
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { t } = useTranslation();
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
@@ -23,7 +25,7 @@ export function BottomNav() {
                 key={item.to}
                 to={item.to}
                 search={{}}
-                aria-label="إنشاء طلب"
+                aria-label={t("إنشاء طلب")}
                 className="-mt-6 grid h-14 w-14 place-items-center rounded-full bg-brand-gradient text-primary-foreground shadow-brand transition-transform active:scale-95"
               >
                 <Plus className="h-7 w-7" />
@@ -40,7 +42,7 @@ export function BottomNav() {
               }`}
             >
               <Icon className="h-5 w-5" />
-              {item.label}
+              {item.label ? t(item.label) : null}
             </Link>
           );
         })}

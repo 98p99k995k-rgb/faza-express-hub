@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
 import { useStore, type RequestType } from "@/lib/store";
+import { useTranslation } from "@/lib/useTranslation";
 
 export const Route = createFileRoute("/create")({
   validateSearch: (search: Record<string, unknown>): { type?: RequestType | undefined } => ({
@@ -32,6 +33,7 @@ function CreatePage() {
   const { type: initialType } = Route.useSearch();
   const navigate = useNavigate();
   const { addRequest, profile } = useStore();
+  const { t } = useTranslation();
 
   const [step, setStep] = useState(initialType ? 2 : 1);
   const [type, setType] = useState<RequestType | null>(initialType ?? null);
@@ -46,11 +48,11 @@ function CreatePage() {
 
   const submit = () => {
     if (!type || !title.trim() || !description.trim() || !city.trim()) {
-      toast.error("فضلاً أكمل جميع الحقول");
+      toast.error(t("فضلاً أكمل جميع الحقول"));
       return;
     }
     if (forSomeoneElse && (!beneficiaryName.trim() || !beneficiaryPhone.trim())) {
-      toast.error("فضلاً أدخل بيانات المستفيد");
+      toast.error(t("فضلاً أدخل بيانات المستفيد"));
       return;
     }
     addRequest({
@@ -64,7 +66,7 @@ function CreatePage() {
       beneficiaryRelation: forSomeoneElse ? beneficiaryRelation.trim() : undefined,
       deliveryAddress: forSomeoneElse ? deliveryAddress.trim() || city.trim() : undefined,
     });
-    toast.success(forSomeoneElse ? "تم إنشاء الطلب لمستفيد آخر بنجاح" : "تم نشر طلبك بنجاح");
+    toast.success(t(forSomeoneElse ? "تم إنشاء الطلب لمستفيد آخر بنجاح" : "تم نشر طلبك بنجاح"));
     navigate({ to: "/orders" });
   };
 
@@ -73,13 +75,13 @@ function CreatePage() {
       <header className="flex items-center justify-between px-4 pt-6">
         <button
           type="button"
-          aria-label="رجوع"
+          aria-label={t("رجوع")}
           onClick={() => (step === 2 ? setStep(1) : navigate({ to: "/" }))}
           className="grid h-10 w-10 place-items-center rounded-full text-foreground"
         >
           <ChevronRight className="h-6 w-6" />
         </button>
-        <h1 className="text-lg font-extrabold text-foreground">إنشاء طلب</h1>
+        <h1 className="text-lg font-extrabold text-foreground">{t("إنشاء طلب")}</h1>
         <span className="w-10" />
       </header>
 
@@ -88,7 +90,7 @@ function CreatePage() {
           <>
             <div className="mt-4 flex flex-col items-center gap-3 rounded-3xl bg-secondary/60 p-6">
               <Logo size="md" />
-              <p className="text-sm font-bold text-secondary-foreground">اختر نوع الطلب</p>
+              <p className="text-sm font-bold text-secondary-foreground">{t("اختر نوع الطلب")}</p>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3">
               {typeOptions.map((opt) => (
@@ -106,7 +108,7 @@ function CreatePage() {
                   }`}
                 >
                   <opt.icon className="h-7 w-7 text-accent" />
-                  <span className="text-sm font-bold">{opt.label}</span>
+                  <span className="text-sm font-bold">{t(opt.label)}</span>
                 </button>
               ))}
               <button
@@ -119,7 +121,7 @@ function CreatePage() {
                 className="col-span-2 flex items-center justify-center gap-2 rounded-3xl border border-primary/30 bg-primary/5 p-4 text-sm font-bold text-primary"
               >
                 <Gift className="h-5 w-5" />
-                فزعة لغيرك
+                {t("فزعة لغيرك")}
               </button>
             </div>
           </>
@@ -136,9 +138,9 @@ function CreatePage() {
                   : "border-border bg-card text-foreground"
               }`}
             >
-              <span>طلب لشخص آخر</span>
+              <span>{t("طلب لشخص آخر")}</span>
               <span className="rounded-full bg-secondary px-2 py-0.5 text-xs">
-                {forSomeoneElse ? "مفعّل" : "غير مفعّل"}
+                {t(forSomeoneElse ? "مفعّل" : "غير مفعّل")}
               </span>
             </button>
 
@@ -146,18 +148,18 @@ function CreatePage() {
               <div className="space-y-3 rounded-2xl border border-primary/20 bg-primary/5 p-3">
                 <div>
                   <label className="mb-1.5 block text-sm font-bold text-foreground">
-                    اسم المستفيد
+                    {t("اسم المستفيد")}
                   </label>
                   <input
                     value={beneficiaryName}
                     onChange={(e) => setBeneficiaryName(e.target.value)}
-                    placeholder="مثال: سارة أحمد"
+                    placeholder={t("مثال: سارة أحمد")}
                     className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-bold text-foreground">
-                    رقم المستفيد
+                    {t("رقم المستفيد")}
                   </label>
                   <input
                     value={beneficiaryPhone}
@@ -168,23 +170,23 @@ function CreatePage() {
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-bold text-foreground">
-                    صلة القرابة
+                    {t("صلة القرابة")}
                   </label>
                   <input
                     value={beneficiaryRelation}
                     onChange={(e) => setBeneficiaryRelation(e.target.value)}
-                    placeholder="أختي / جدي / صديقتي"
+                    placeholder={t("أختي / جدي / صديقتي")}
                     className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-bold text-foreground">
-                    عنوان التوصيل
+                    {t("عنوان التوصيل")}
                   </label>
                   <input
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
-                    placeholder="الحي / العنوان التفصيلي"
+                    placeholder={t("الحي / العنوان التفصيلي")}
                     className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
@@ -192,30 +194,36 @@ function CreatePage() {
             )}
 
             <div>
-              <label className="mb-1.5 block text-sm font-bold text-foreground">عنوان الطلب</label>
+              <label className="mb-1.5 block text-sm font-bold text-foreground">
+                {t("عنوان الطلب")}
+              </label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="مثال: أحتاج توصيل دواء"
+                placeholder={t("مثال: أحتاج توصيل دواء")}
                 className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-bold text-foreground">التفاصيل</label>
+              <label className="mb-1.5 block text-sm font-bold text-foreground">
+                {t("التفاصيل")}
+              </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="اشرح ما تحتاجه بالتفصيل..."
+                placeholder={t("اشرح ما تحتاجه بالتفصيل...")}
                 rows={4}
                 className="w-full resize-none rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-bold text-foreground">المدينة</label>
+              <label className="mb-1.5 block text-sm font-bold text-foreground">
+                {t("المدينة")}
+              </label>
               <input
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                placeholder="جدة"
+                placeholder={t("جدة")}
                 className="w-full rounded-2xl border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
@@ -224,7 +232,7 @@ function CreatePage() {
               onClick={submit}
               className="w-full rounded-full bg-brand-gradient py-4 text-base font-extrabold text-primary-foreground shadow-brand transition-transform active:scale-[0.98]"
             >
-              {forSomeoneElse ? "مراجعة الطلب والدفع" : "نشر الطلب"}
+              {t(forSomeoneElse ? "مراجعة الطلب والدفع" : "نشر الطلب")}
             </button>
           </div>
         )}
